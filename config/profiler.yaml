@@ -1,0 +1,21 @@
+agent:
+  service_name: ebpf-latency-profiler
+  window: 5m
+  flush_interval: 10s
+  payload_prefix_size: 160
+
+ebpf:
+  # socket | uprobe | hybrid
+  mode: socket
+  enable_uprobes: false
+  target_pids: []
+
+opentelemetry:
+  endpoint: otel-collector:4317
+  insecure: true
+
+redaction:
+  enabled: true
+  path_patterns:
+    - /users/{id}
+    - /orders/{id}

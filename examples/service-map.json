@@ -1,0 +1,26 @@
+{
+  "edges": [
+    {
+      "source": "frontend",
+      "target": "orders",
+      "operation": "/orders/{id}",
+      "protocol": "http1",
+      "count": 1250,
+      "p50_ms": 43.1,
+      "p95_ms": 188.4,
+      "p99_ms": 392.7,
+      "error_rate": 0.012
+    },
+    {
+      "source": "orders",
+      "target": "payments",
+      "operation": "payments.v1.PaymentService/Authorize",
+      "protocol": "grpc",
+      "count": 1180,
+      "p50_ms": 31.8,
+      "p95_ms": 220.5,
+      "p99_ms": 810.2,
+      "error_rate": 0.021
+    }
+  ]
+}

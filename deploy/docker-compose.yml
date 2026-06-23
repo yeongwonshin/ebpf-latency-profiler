@@ -1,0 +1,45 @@
+services:
+  otel-collector:
+    image: otel/opentelemetry-collector-contrib:0.129.0
+    command: ["--config=/etc/otelcol.yaml"]
+    volumes:
+      - ../config/otelcol.yaml:/etc/otelcol.yaml:ro
+    ports:
+      - "4317:4317"
+      - "4318:4318"
+      - "9464:9464"
+
+  jaeger:
+    image: jaegertracing/all-in-one:1.69.0
+    ports:
+      - "16686:16686"
+      - "4319:4317"
+
+  prometheus:
+    image: prom/prometheus:v3.4.2
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml:ro
+    ports:
+      - "9090:9090"
+
+  demo-http:
+    build:
+      context: ..
+      dockerfile: Dockerfile.demo-http
+    ports:
+      - "8080:8080"
+
+  profiler:
+    build:
+      context: ..
+      dockerfile: Dockerfile
+    privileged: true
+    pid: host
+    network_mode: host
+    volumes:
+      - /sys/kernel/debug:/sys/kernel/debug:rw
+      - /sys/fs/bpf:/sys/fs/bpf:rw
+      - ../config/profiler.yaml:/etc/ebpf-latency-profiler.yaml:ro
+    command: ["--config", "/etc/ebpf-latency-profiler.yaml", "--mock=true"]
+    depends_on:
+      - otel-collector

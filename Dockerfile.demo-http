@@ -1,0 +1,10 @@
+FROM golang:1.23-bookworm AS build
+WORKDIR /src
+COPY go.mod ./
+COPY . .
+RUN go build -o /out/demo-http ./cmd/demo-http
+
+FROM debian:bookworm-slim
+COPY --from=build /out/demo-http /usr/local/bin/demo-http
+EXPOSE 8080
+ENTRYPOINT ["/usr/local/bin/demo-http"]
